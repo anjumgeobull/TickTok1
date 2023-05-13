@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PlayEditedVideoActivity">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/videoFullScreenPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A6000000"
+        app:repeat_toggle_modes="one"
+        app:show_timeout="45000"
+        app:surface_type="texture_view"
+        />
+
+    <!--    <ImageView-->
+    <!--        android:id="@+id/imgClose"-->
+    <!--        android:layout_width="@dimen/img_size"-->
+    <!--        android:layout_height="@dimen/img_size"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:src="@drawable/ic_cancel"-->
+    <!--        android:layout_margin="10dp"-->
+    <!--        />-->
+
+    <!--    <RelativeLayout-->
+    <!--        android:id="@+id/rlBack"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginRight="20dp"-->
+    <!--        android:layout_weight="1">-->
+
+    <ImageView
+        android:id="@+id/imgClose"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_back"
+        android:visibility="visible" />
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@+id/img_back"-->
+    <!--            android:layout_centerHorizontal="true"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="Back"-->
+    <!--            android:textColor="@color/white" />-->
+    <!--    </RelativeLayout>-->
+
+    <LinearLayout
+        android:id="@+id/rlNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imgNext"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_next"
+            android:visibility="visible" />
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_below="@+id/imgNext"-->
+        <!--                android:layout_centerHorizontal="true"-->
+        <!--                android:layout_gravity="center"-->
+        <!--                android:layout_marginTop="5dp"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="Next"-->
+        <!--                android:textColor="@color/white" />-->
+    </LinearLayout>
+
+</RelativeLayout>

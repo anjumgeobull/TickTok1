@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LeadForm">
+
+    <ImageView
+        android:id="@+id/bk_arrow"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_arrow_back_black_24dp" />
+
+
+    <RelativeLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="43dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="15sp"
+            android:layout_marginEnd="15sp"
+            android:layout_marginBottom="15sp"
+            android:background="@drawable/white_rectangular_border"
+            android:backgroundTint="@color/black"
+            android:orientation="vertical"
+            android:padding="1sp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="ADD ENQUIRY"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="324dp"
+            android:background="@drawable/white_rectangular_border"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:paddingBottom="20dp">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:layout_gravity="left"
+                    android:src="@drawable/user" />
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Add Your Details"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/yname"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:layout_marginTop="5sp"
+                android:background="@drawable/editblc"
+                android:gravity="center"
+                android:hint="Enter Your Name"
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/mobile_no"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:layout_marginTop="5sp"
+                android:background="@drawable/editblc"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:hint="Enter Mobile Number"
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/email_id"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:layout_marginTop="5sp"
+                android:background="@drawable/editblc"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:hint="Enter Email Id "
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/requirement"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:layout_marginTop="5sp"
+                android:background="@drawable/editblc"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:hint="Enter Requirement"
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="left"
+            android:layout_marginStart="313dp"
+            android:layout_marginTop="406dp"
+            android:layout_marginEnd="176dp"
+            android:layout_marginBottom="234dp"
+            android:backgroundTint="@color/black"
+            android:text="Submit"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        >
+        <TextView
+            android:id="@+id/tvSaveProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/txtclr"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:text="Save" />
+
+        <ImageView
+            android:id="@+id/imgClose"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_cancel"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:src="@drawable/userimg"
+            android:layout_gravity="center"
+            android:id="@+id/imgUser_edit"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_camera"
+            android:layout_centerVertical="true"
+            android:layout_alignEnd="@+id/imgUser_edit"
+            tools:ignore="MissingConstraints" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+
+    <EditText
+        android:id="@+id/edtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/str_name"
+        android:layout_margin="5dp"
+        />
+
+    <EditText
+        android:id="@+id/edtMobileNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/str_mobile_no"
+        android:layout_margin="5dp"
+        android:enabled="false"
+        />
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/str_email"
+        android:layout_margin="5dp"
+        />
+
+<!--    <EditText-->
+<!--        android:id="@+id/edtBio"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="@string/str_bio"-->
+<!--        android:layout_margin="5dp"-->
+<!--        />-->
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/gray"-->
+<!--        android:layout_margin="5dp"-->
+<!--        />-->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/show_profileto"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:orientation="vertical"-->
+<!--       android:weightSum="1">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="0.3"-->
+<!--            android:text="Show Profile"-->
+<!--            android:textSize="16dp"-->
+<!--            android:layout_marginBottom="10dp"/>-->
+
+<!--        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="0.7"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <RadioButton android:id="@+id/radio_follow"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Follow"-->
+<!--                android:layout_weight="0.3"-->
+<!--                android:onClick="onRadioButtonClicked"/>-->
+<!--            <RadioButton android:id="@+id/radio_following"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Following"-->
+<!--                android:layout_weight="0.3"-->
+<!--                android:onClick="onRadioButtonClicked"/>-->
+<!--            <RadioButton android:id="@+id/radio_both"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Both"-->
+<!--                android:layout_weight="0.3"-->
+<!--                android:onClick="onRadioButtonClicked"/>-->
+
+<!--        </RadioGroup>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/gray"-->
+<!--        android:layout_margin="5dp"-->
+<!--        />-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/llSelectDateOfBirth"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:weightSum="1">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/str_date_of_birth"-->
+<!--            android:layout_weight="0.3"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/tvDateofBirth"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Not specified"-->
+<!--            android:layout_weight="0.7"/>-->
+<!--    </LinearLayout>-->
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/gray"-->
+<!--        android:layout_margin="5dp"-->
+<!--        />-->
+
+</LinearLayout>

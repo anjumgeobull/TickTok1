@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:behavior_peekHeight="450sp"
+    android:layout_margin="10sp"
+    android:padding="5sp"
+    android:background="@drawable/bottomsheet_bg"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/black"
+            android:layout_height="wrap_content">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/shimmer_layout" />
+
+                    <include layout="@layout/shimmer_layout" />
+
+                    <include layout="@layout/shimmer_layout" />
+
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <TextView
+                android:id="@+id/tv_total_comments"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:text=""
+                android:visibility="gone"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:gravity="end"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComments"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                android:minHeight="80sp"
+                android:layout_below="@+id/shimmer_view_container"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollIndicators="right"
+                android:layout_height="200sp" />
+
+            <TextView
+                android:id="@+id/tv_no_comment"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:text="No comments available"
+                android:visibility="gone"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:backgroundTint="@color/white"
+                android:background="@drawable/white_rectangular_border"
+                android:layout_below="@+id/rvComments"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:ems="10"
+                    android:hint="Add comment"
+                    android:inputType="text"
+                    android:paddingHorizontal="10dp"
+                    android:text=""
+                    android:backgroundTint="@color/imgly_transparent_color"
+                    android:textSize="13dp" />
+
+                <ImageButton
+                    android:id="@+id/btn_comment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/ic_right_arrow"
+                    android:padding="20dp"
+                    android:scaleType="fitCenter" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
