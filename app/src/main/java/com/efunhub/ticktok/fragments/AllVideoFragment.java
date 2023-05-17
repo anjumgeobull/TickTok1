@@ -287,7 +287,8 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
 
                             if (Integer.parseInt(status) == 0) {
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-                            } else if (Integer.parseInt(status) == 1) {
+                            } else
+                                if (Integer.parseInt(status) == 1) {
                                 String current_order = jsonObject.getString("user_profile");
                                 GsonBuilder gsonBuilder = new GsonBuilder();
                                 Gson gson = gsonBuilder.create();
@@ -295,10 +296,10 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                                 userProfileModel_List = new ArrayList<>(Arrays.asList(userProfiles));
                                 if (!userProfileModel_List.isEmpty()) {
                                     SessionManager.onSavePoints(userProfileModel_List.get(0).getPoint());
-                                } else {
-
                                 }
                             }
+
+
 
                         } catch (JSONException e1) {
                             e1.printStackTrace();

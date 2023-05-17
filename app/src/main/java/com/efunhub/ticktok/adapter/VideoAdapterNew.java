@@ -6,10 +6,13 @@ import static ly.img.android.pesdk.backend.decoder.ImageSource.getResources;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +34,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.efunhub.ticktok.BuildConfig;
 import com.efunhub.ticktok.CampaignModel.CampaignModelData;
 import com.efunhub.ticktok.R;
 import com.efunhub.ticktok.activity.LoginActivity;
@@ -51,6 +52,7 @@ import com.efunhub.ticktok.fragments.NotificationsFragment;
 import com.efunhub.ticktok.interfaces.Like_video_interface;
 import com.efunhub.ticktok.interfaces.ShowCommentListener;
 import com.efunhub.ticktok.model.AllVideoModel;
+import com.pedromassango.doubleclick.BuildConfig;
 import com.pedromassango.doubleclick.DoubleClick;
 import com.pedromassango.doubleclick.DoubleClickListener;
 import com.squareup.picasso.MemoryPolicy;
@@ -62,6 +64,10 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHolder> {
+
+
+
+
 
     ArrayList<AllVideoModel.Data> allvideoList;
     ArrayList<CampaignModelData.Data> allcampaign;
@@ -84,6 +90,9 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         this.showCommentListener = showCommentListener;
         this.like_video_interface = like_video_interface;
         this.type = type;
+
+
+
         //this.userProfileModel_List = userProfileModel_List;
 
     }
@@ -110,6 +119,11 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
+        System.out.println("VideoType===>"+allvideoList.get(position).getType());
+        String videoType=allvideoList.get(position).getType();
+        System.out.println(videoType);
+
+        ///Get Video List normal and ads video
         holder.videoView.setVideoPath(VIDEO_URL + allvideoList.get(position).getVideo() +
                 allvideoList.get(position).getcVideos());
 
@@ -134,6 +148,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 });
             }
         });
+
 
 
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
@@ -163,43 +178,59 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 holder.tv_show_points.setText("Points  " + allvideoList.get(position).getPoint());
             }
         }
-        holder.itemView.setOnClickListener(new DoubleClick(new DoubleClickListener() {
+
+
+            holder.itemView.setOnClickListener(new DoubleClick(new DoubleClickListener()
+        {
             @Override
             public void onSingleClick(View view) {
+                if (videoType.equals("normal_videos")) {
+                    if (holder.llTopMenu.getVisibility() == View.VISIBLE) {
+                        holder.videoView.start();
+                        holder.llTopMenu.setVisibility(View.GONE);
+                        holder.llSideMenu.setVisibility(View.GONE);
+                        holder.lldetailsMenu.setVisibility(View.GONE);
+                        holder.img_pause.setVisibility(View.GONE);
+                        holder.skip_button.setVisibility(View.GONE);
+                        holder.videodata.setVisibility(View.GONE);
+                    } else {
+                        holder.videoView.pause();
+                        holder.llTopMenu.setVisibility(View.VISIBLE);
+                        holder.llSideMenu.setVisibility(View.VISIBLE);
+                        holder.skip_button.setVisibility(View.GONE);
+                        holder.lldetailsMenu.setVisibility(View.VISIBLE);
+                        holder.img_pause.setVisibility(View.VISIBLE);
+                        holder.img_pause.setVisibility(View.VISIBLE);
+                        holder.videodata.setVisibility(View.VISIBLE);
+                    }
 
-                if (holder.llTopMenu.getVisibility() == View.VISIBLE) {
-                    holder.videoView.start();
-                    holder.llTopMenu.setVisibility(View.GONE);
-                    holder.llSideMenu.setVisibility(View.GONE);
-                    holder.lldetailsMenu.setVisibility(View.GONE);
-                    holder.img_pause.setVisibility(View.GONE);
+                } else if (videoType.equals("ads_video")) {
 
-                    //holder.llFirstMenu.setVisibility(View.VISIBLE);
-                } else {
-                    holder.videoView.pause();
-                    holder.llTopMenu.setVisibility(View.VISIBLE);
-                    holder.llSideMenu.setVisibility(View.VISIBLE);
-                    holder.lldetailsMenu.setVisibility(View.VISIBLE);
-                    holder.img_pause.setVisibility(View.VISIBLE);
-                    // holder.llFirstMenu.setVisibility(View.GONE);
+                    holder.skip_button.setVisibility(View.VISIBLE);
+                    holder.videodata.setVisibility(View.VISIBLE);
+                    holder.skip_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            allvideoList.remove(position);
+                            notifyItemRemoved(position);
+                        }
+                    });
+
+                    String url1=allvideoList.get(position).getLinks();
+                    System.out.println("URL LINK==>"+url1);
+                    String url = "https://www.google.com";
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    if (activity != null) {
+                        activity.startActivity(intent);
+                    }
+                }else {
+                    Log.e("Video", "activity is null");
                 }
-//                if (holder.llTopMenu.getVisibility()==View.VISIBLE){
-//                    if(allvideoList.get(position).getType()=="ads_video"){
-//                        holder.videoView.start();
-//                        holder.llTopMenu.setVisibility(View.GONE);
-//                        holder.llSideMenu.setVisibility(View.GONE);
-//                        holder.lldetailsMenu.setVisibility(View.GONE);
-//                        holder.img_pause.setVisibility(View.GONE);
-//                    }else {
-//                        holder.videoView.pause();
-//                        holder.llTopMenu.setVisibility(View.GONE);
-//                        holder.llSideMenu.setVisibility(View.GONE);
-//                        holder.lldetailsMenu.setVisibility(View.GONE);
-//                        holder.img_pause.setVisibility(View.GONE);
-//                        // holder.llFirstMenu.setVisibility(View.GONE);
-//                    }
-//                }
             }
+
+
 
             @Override
             public void onDoubleClick(View view) {
@@ -245,6 +276,25 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 // Double tap here.
             }
         }));
+
+
+//            holder.videoView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if(videoType.equals("ads_video")) {
+//                        String url = "https://www.google.com"; // Replace with the desired URL
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                        if (activity != null) {
+//                            activity.startActivity(intent);
+//                        }
+//                    }else {
+//                        Log.e("Video", "activity is null");
+//                    }
+//                }
+//            });
+
 
         holder.imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,6 +343,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                     //.transform(new CircleTransform())
                     .into(holder.imgProfile);
         }
+
 
         holder.img_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -399,30 +450,8 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 transaction.commit();
             }
         });
-//        if (allvideoList.get(position).getType()=="ads_video"){
-//
-//            holder.videoView.start();
-//            holder.skip_button.setVisibility(View.VISIBLE);
-//            holder.skip_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                }
-//            });
-//
-//
-//        }else {
-//            holder.skip_button.setVisibility(View.GONE);
-//        }
 
 
-        holder.skip_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                allvideoList.remove(position);
-                notifyItemRemoved(position);
-            }
-        });
 
 
         holder.tv_rgister.setOnClickListener(new View.OnClickListener() {
@@ -481,7 +510,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         TextView tvWishlistCount, tvCommentCount, tv_show_points,tv_rgister;
         EditText et_serarch_view;
         ProgressBar progressBar = null;
-        LinearLayout llTopMenu, llSideMenu, lldetailsMenu, Search_layout, img_myHome;
+        LinearLayout llTopMenu, llSideMenu, lldetailsMenu, Search_layout, img_myHome,videodata;
         ToggleButton btn_Wishlist;
         TextView tv_username, tv_video_caption;
         ImageView heart_gif;
@@ -520,25 +549,12 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             heart_gif = itemView.findViewById(R.id.img_heart);
             img_notification = itemView.findViewById(R.id.imgNotification);
             skip_button = itemView.findViewById(R.id.skipButton);
-            boolean isAdsVideo=false;
-            // Change this based on your condition
+            videodata = itemView.findViewById(R.id.videodata);
 
-//            String Ads=allvideoList.get(getPosition()).getType();
-//            System.out.println("ADS VIDEO"+Ads);
-//            if(Ads=="ads_video"){
-//                isAdsVideo = true;
-//            }isAdsVideo = false;
-//            if (isAdsVideo) {
-//                skip_button.setVisibility(View.VISIBLE); // Ads video, show skip button
-//            } else {
-//                skip_button.setVisibility(View.GONE); // Normal video, hide skip button
-//            }
 
 
         }
 
-//
-//        }
 
     }
 

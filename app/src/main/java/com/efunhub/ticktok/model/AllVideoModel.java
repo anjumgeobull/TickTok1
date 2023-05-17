@@ -47,6 +47,16 @@ public  class AllVideoModel extends BaseServiceResponseModel {
 
         private String type;
 
+        private String links;
+
+        public String getLinks() {
+            return links;
+        }
+
+        public void setLinks(String links) {
+            this.links= links;
+        }
+
         public String getType() {
             return type;
         }
