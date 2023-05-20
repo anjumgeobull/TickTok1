@@ -20,8 +20,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.efunhub.ticktok.R;
 import com.efunhub.ticktok.adapter.VideoAdapterNew;
 import com.efunhub.ticktok.application.SessionManager;
+import com.efunhub.ticktok.interfaces.Click_video_interface;
 import com.efunhub.ticktok.interfaces.Like_video_interface;
 import com.efunhub.ticktok.interfaces.ShowCommentListener;
+import com.efunhub.ticktok.interfaces.requestcallback_interface;
 import com.efunhub.ticktok.model.AllVideoModel;
 import com.efunhub.ticktok.model.User_Profile_Model.UserProfile;
 import com.efunhub.ticktok.retrofit.APICallback;
@@ -38,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Following_VideoFragment extends Fragment implements ShowCommentListener, Like_video_interface {
+public class Following_VideoFragment extends Fragment implements ShowCommentListener, Like_video_interface, Click_video_interface , requestcallback_interface {
     View view;
     private AllVideoServiceProvider allVideoServiceProvider;
     private AlertDialogs mAlert;
@@ -92,7 +94,7 @@ public class Following_VideoFragment extends Fragment implements ShowCommentList
         SnapHelper snapHelper = new PagerSnapHelper();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         rv_FOllowing_VideoView.setLayoutManager(gridLayoutManager);
-        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this,this, "following");
+        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this,this, "following",this,this);
 
         rv_FOllowing_VideoView.setAdapter(videoAdapter);
         snapHelper.attachToRecyclerView(rv_FOllowing_VideoView);
@@ -228,5 +230,15 @@ public class Following_VideoFragment extends Fragment implements ShowCommentList
             }
         };
         VolleySingleton.getInstance(getActivity()).addToRequestQueue(postRequest);
+    }
+
+    @Override
+    public void Click_video(int position, String click, String view, String impression) {
+
+    }
+
+    @Override
+    public void Callback_request_video(int position) {
+
     }
 }

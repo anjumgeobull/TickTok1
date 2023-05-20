@@ -40,9 +40,11 @@ import com.efunhub.ticktok.activity.UserDetailsRegistration;
 import com.efunhub.ticktok.adapter.VideoAdapterNew;
 import com.efunhub.ticktok.application.SessionManager;
 
+import com.efunhub.ticktok.interfaces.Click_video_interface;
 import com.efunhub.ticktok.interfaces.IResult;
 import com.efunhub.ticktok.interfaces.Like_video_interface;
 import com.efunhub.ticktok.interfaces.ShowCommentListener;
+import com.efunhub.ticktok.interfaces.requestcallback_interface;
 import com.efunhub.ticktok.model.AllVideoModel;
 import com.efunhub.ticktok.model.User_Profile_Model.UserProfile;
 import com.efunhub.ticktok.retrofit.APICallback;
@@ -67,7 +69,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class AllVideoFragment extends Fragment implements ShowCommentListener, Like_video_interface {
+public class AllVideoFragment extends Fragment implements ShowCommentListener, Like_video_interface , Click_video_interface , requestcallback_interface {
 
     private AllVideoServiceProvider allVideoServiceProvider;
     private Video_LIke_Service_Provider video_lIke_service_provider;
@@ -77,13 +79,17 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
     String user_id;
     String camp_user_id="64390423339405e88706f562";
     String img_url = "https://grobiz.app/tiktokadmin/images/phase_two_images/";
+    String img_url1 = "https://grobiz.app/tiktokadmin/images/videos/";
     String camp_status="Active";
     boolean flag;
     VideoAdapterNew videoAdapter;
     String video_like = "video-like";
+    String add_counts = "add_counts";
+
+    String request_callback = "request_callback";
     String Profile_User = "get_myprofile";
     String CampaignImg ="",CampName="", CampLink ="";
-    String get_campaign_list="get_campaign_list";
+    String get_campaign_list="get_image_campaign_list";
     private VolleyService mVolleyService;
     private IResult mResultCallBack = null;
     ArrayList<UserProfile> userProfileModel_List = new ArrayList<>();
@@ -128,6 +134,13 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         CampImg=root.findViewById(R.id.campainImg);
         crossImg=root.findViewById(R.id.imgCross);
         Connectus=root.findViewById(R.id.connect);
+        Connectus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         relativeLayout = root.findViewById(R.id.linearLayoutCamp);
         allVideoServiceProvider = new AllVideoServiceProvider(getActivity());
         video_lIke_service_provider = new Video_LIke_Service_Provider(getActivity());
@@ -141,17 +154,16 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         callGetAllVideoApi(SessionManager.onGetAutoCustomerId(),limit,index);
         flag = true;
 
-        Connectus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), LeadForm.class));
-            }
-        });
+//        Connectus.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(getActivity(), LeadForm.class));
+//            }
+//        });
         crossImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 relativeLayout.setVisibility(View.GONE);
-
             }
         });
 
@@ -162,7 +174,7 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         SnapHelper snapHelper = new PagerSnapHelper();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         rvVideoView.setLayoutManager(gridLayoutManager);
-        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this, this, "for_you");
+        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this, this,"for_you",this,this);
         rvVideoView.setAdapter(videoAdapter);
         // Set up the pagination logic
         snapHelper.attachToRecyclerView(rvVideoView);
@@ -264,11 +276,11 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         initVolleyCallback();
         mVolleyService = new VolleyService(mResultCallBack, getActivity());
 
-        Map<String, String> params = new HashMap<>();
-        params.put("user_auto_id", camp_user_id);
-        params.put("status", camp_status);
-        System.out.println("params=>" + params.toString());
-        mVolleyService.postDataVolleyParameters(CAMPAIGN_LIST, SERVER_URL + get_campaign_list, params);
+//        Map<String, String> params = new HashMap<>();
+//        params.put("user_auto_id", camp_user_id);
+//        params.put("status", camp_status);
+//        System.out.println("params=>" + params.toString());
+        mVolleyService.getDataVolley(CAMPAIGN_LIST, SERVER_URL + get_campaign_list);
 
     }
 
@@ -289,17 +301,17 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                             } else
                                 if (Integer.parseInt(status) == 1) {
-                                String current_order = jsonObject.getString("user_profile");
-                                GsonBuilder gsonBuilder = new GsonBuilder();
-                                Gson gson = gsonBuilder.create();
-                                UserProfile userProfiles = gson.fromJson(current_order, UserProfile.class);
-                                userProfileModel_List = new ArrayList<>(Arrays.asList(userProfiles));
-                                if (!userProfileModel_List.isEmpty()) {
-                                    SessionManager.onSavePoints(userProfileModel_List.get(0).getPoint());
-                                }
+                                    String current_order = jsonObject.getString("user_profile");
+                                    GsonBuilder gsonBuilder = new GsonBuilder();
+                                    Gson gson = gsonBuilder.create();
+                                    UserProfile userProfiles = gson.fromJson(current_order, UserProfile.class);
+                                    userProfileModel_List = new ArrayList<>(Arrays.asList(userProfiles));
+                                    if (!userProfileModel_List.isEmpty()) {
+                                        SessionManager.onSavePoints(userProfileModel_List.get(0).getPoint());
+                                    } else {
+
+                                    }
                             }
-
-
 
                         } catch (JSONException e1) {
                             e1.printStackTrace();
@@ -355,7 +367,7 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                                     if (!(camImg.isEmpty()) && !(camImg.equals(img_url)) && !camImg.equals("null"))
                                     {
                                         Picasso.with(getContext())
-                                                .load(img_url+camImg)
+                                                .load(img_url1+camImg)
                                                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                                                 .networkPolicy(NetworkPolicy.NO_CACHE)
                                                 //.transform(new CircleTransform())
@@ -385,9 +397,7 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
 
                                     Handler handler = new Handler();
                                     handler.postDelayed(hideImageViewRunnable, duration);
-
                                 }
-
 
                             } else {
                                 // Handle other statuses
@@ -505,6 +515,124 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                 params.put("user_id", user_id);
                 params.put("video_id", video_id);
                 params.put("like", like_status);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(postRequest);
+    }
+
+
+    public void Click_video(int position,String click,String view,String impression) {
+
+        String Urls = SERVER_URL + add_counts;
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Urls,
+                response -> {
+                    // response
+                    Log.d("Response", response);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("msg");
+                        int status = jsonObject.getInt("status");
+
+                        System.out.println("Click_Video_Data=> status " + status);
+
+                        if (status == 1) {
+
+//                            int like = videoArrayList.get(position).getTotal_likes();
+//                            System.out.println("like=>" + like);
+//                            AllVideoModel.Data data = videoArrayList.get(position);
+//                            data.setTotal_likes(like + 1);
+//                            int point = Integer.parseInt(videoArrayList.get(position).getPoint());
+//                            int updated = point + 2;
+//                            String updated_point=Integer.toString(updated);
+//                            videoArrayList.get(position).setPoint(updated_point);
+
+                            Toast.makeText(getActivity(), "Impression", Toast.LENGTH_SHORT).show();
+
+                        } else if (status == 2) {
+                            Toast.makeText(getActivity(), "not impression", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
+                    }
+
+                },
+                error -> {
+                    // error
+                    Log.d("Error.Response", String.valueOf(error));
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("id", videoArrayList.get(position).get_id());
+                params.put("user_auto_id", user_id);
+                params.put("campaign_user_auto_id", videoArrayList.get(position).getCampaign_user_auto_id());
+                params.put("campaign_auto_id", videoArrayList.get(position).getCampaign_auto_id());
+                params.put("click", click);
+                params.put("view", view);
+                params.put("impresson", impression);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(postRequest);
+    }
+
+    public void Callback_request_video(int position) {
+
+        String Urls = SERVER_URL + request_callback;
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Urls,
+                response -> {
+                    // response
+                    Log.d("Response", response);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("msg");
+                        int status = jsonObject.getInt("status");
+
+                        System.out.println("Click_Video_Data=> status " + status);
+
+                        if (status == 1) {
+
+                            Toast.makeText(getActivity(), "We have got your interest,we will call you back", Toast.LENGTH_SHORT).show();
+
+                        } else if (status == 2) {
+                            Toast.makeText(getActivity(), "not intrested", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
+                    }
+
+                },
+                error -> {
+                    // error
+                    Log.d("Error.Response", String.valueOf(error));
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("user_auto_id", user_id);
+                params.put("campaign_user_auto_id", videoArrayList.get(position).getCampaign_user_auto_id());
+                params.put("campaign_auto_id", videoArrayList.get(position).getCampaign_auto_id());
+                params.put("name", userProfileModel_List.get(0).getName());
+                params.put("contact", userProfileModel_List.get(0).getMobile());
                 return params;
             }
         };

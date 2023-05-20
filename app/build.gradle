@@ -74,7 +74,6 @@ android {
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -130,7 +129,9 @@ dependencies {
 
     implementation 'org.jcodec:jcodec-android:0.1.9'
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1') {
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel'
+    }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'io.alterac.blurkit:blurkit:1.0.0'
     implementation 'com.google.code.gson:gson:2.10'
@@ -159,7 +160,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.1.1'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.github.pedromassango:doubleClick:3.0'
-    implementation 'com.github.Drjacky:ImagePicker:2.3.22'
+    //implementation 'com.github.Drjacky:ImagePicker:2.3.22'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.google.firebase:firebase-dynamic-links'
 

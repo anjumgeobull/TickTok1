@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.efunhub.ticktok.R;
+import com.efunhub.ticktok.application.SessionManager;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -17,15 +18,20 @@ public class SplashScreenActivity extends AppCompatActivity {
         splashScreen();
     }
 
-
     private void splashScreen() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                finish();
-            }
-        }, 2000);
+        if (SessionManager.onGetAutoCustomerId().isEmpty()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }, 2000);
+            //startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+        } else {
+            startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+
+        }
     }
 
 }

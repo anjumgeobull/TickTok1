@@ -34,7 +34,9 @@ public  class AllVideoModel extends BaseServiceResponseModel {
         private String profile_img;
         private String point;
 
-        private String campaign_auto_id_id;
+        private String campaign_auto_id;
+
+        private String campaign_user_auto_id;
 
         private String user_auto_id;
         
@@ -43,6 +45,8 @@ public  class AllVideoModel extends BaseServiceResponseModel {
         private String isVideo;
 
         private String campaign_type;
+
+        private String type_of_campaign;
         private String videos;
 
         private String type;
@@ -65,12 +69,28 @@ public  class AllVideoModel extends BaseServiceResponseModel {
             this.type= type;
         }
 
-        public String getCampaign_auto_id_id() {
-            return campaign_auto_id_id;
+        public String getCampaign_auto_id() {
+            return campaign_auto_id;
         }
 
-        public void setCampaign_auto_id_id(String campaign_auto_id_id) {
-            this.campaign_auto_id_id= campaign_auto_id_id;
+        public void setCampaign_auto_id(String campaign_auto_id_id) {
+            this.campaign_auto_id= campaign_auto_id_id;
+        }
+
+        public String getCampaign_user_auto_id() {
+            return campaign_user_auto_id;
+        }
+
+        public void setCampaign_user_auto_id(String campaign_user_auto_id) {
+            this.campaign_user_auto_id = campaign_user_auto_id;
+        }
+
+        public String getType_of_campaign() {
+            return type_of_campaign;
+        }
+
+        public void setType_of_campaign(String type_of_campaign) {
+            this.type_of_campaign = type_of_campaign;
         }
 
         public String getUser_auto_id() {

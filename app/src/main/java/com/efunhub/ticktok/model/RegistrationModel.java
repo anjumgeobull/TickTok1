@@ -7,7 +7,6 @@ import java.util.List;
 
 public  class RegistrationModel extends BaseServiceResponseModel {
 
-
     private ArrayList<Data> data;
 
     public ArrayList<Data> getData() {

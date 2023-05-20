@@ -1,11 +1,7 @@
 
 package com.efunhub.ticktok.model.LikeVideo_Model;
 
-
-import com.efunhub.ticktok.model.AllVideoModel;
 import com.efunhub.ticktok.retrofit.BaseServiceResponseModel;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import com.efunhub.ticktok.CampaignModel.CampaignModelData;
 import com.efunhub.ticktok.R;
+import com.efunhub.ticktok.activity.LeadForm;
 import com.efunhub.ticktok.activity.LoginActivity;
 import com.efunhub.ticktok.activity.MainActivity;
 import com.efunhub.ticktok.activity.MyProfile_Activity;
@@ -49,8 +51,10 @@ import com.efunhub.ticktok.application.SessionManager;
 import com.efunhub.ticktok.backgroundservice.BackgroundSoundService;
 import com.efunhub.ticktok.fragments.AllVideoFragment;
 import com.efunhub.ticktok.fragments.NotificationsFragment;
+import com.efunhub.ticktok.interfaces.Click_video_interface;
 import com.efunhub.ticktok.interfaces.Like_video_interface;
 import com.efunhub.ticktok.interfaces.ShowCommentListener;
+import com.efunhub.ticktok.interfaces.requestcallback_interface;
 import com.efunhub.ticktok.model.AllVideoModel;
 import com.pedromassango.doubleclick.BuildConfig;
 import com.pedromassango.doubleclick.DoubleClick;
@@ -65,33 +69,32 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHolder> {
 
-
-
-
-
     ArrayList<AllVideoModel.Data> allvideoList;
-    ArrayList<CampaignModelData.Data> allcampaign;
-  //  ArrayList<UserProfile> userProfileModel_List = new ArrayList<>();
+
     Activity activity;
     Fragment fragment;
     private LayoutInflater mInflater;
     ShowCommentListener showCommentListener;
     Like_video_interface like_video_interface;
+    Click_video_interface click_video_interface;
+
+    requestcallback_interface requestcallbackInterface;
     int point;
     String type;
     String img_url = "https://grobiz.app/tiktokadmin/images/user_profiles/";
 
     private static final int PERMISSION_REQUEST_CODE = 200;
 
-    public VideoAdapterNew(Activity context, ArrayList<AllVideoModel.Data> allvideoList, ShowCommentListener showCommentListener, Like_video_interface like_video_interface, String type) {
+    public VideoAdapterNew(Activity context, ArrayList<AllVideoModel.Data> allvideoList, ShowCommentListener showCommentListener, Like_video_interface like_video_interface,
+                           String type,Click_video_interface click_video_interface,requestcallback_interface requestcallback_interface) {
         this.activity = context;
         this.mInflater = LayoutInflater.from(context);
         this.allvideoList = allvideoList;
         this.showCommentListener = showCommentListener;
         this.like_video_interface = like_video_interface;
+        this.click_video_interface = click_video_interface;
+        this.requestcallbackInterface = requestcallback_interface;
         this.type = type;
-
-
 
         //this.userProfileModel_List = userProfileModel_List;
 
@@ -149,8 +152,6 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             }
         });
 
-
-
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
@@ -159,14 +160,6 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         rotateAnimation.setDuration(1000);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
 
-        //holder.imgMusic.startAnimation(rotateAnimation);
-
-       /* holder.scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                holder.scroll.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });*/
         if (SessionManager.onGetAutoCustomerId().isEmpty()) {
             holder.tv_show_points.setText("Free Registrations");
         } else {
@@ -179,8 +172,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             }
         }
 
-
-            holder.itemView.setOnClickListener(new DoubleClick(new DoubleClickListener()
+        holder.itemView.setOnClickListener(new DoubleClick(new DoubleClickListener()
         {
             @Override
             public void onSingleClick(View view) {
@@ -200,37 +192,16 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                         holder.skip_button.setVisibility(View.GONE);
                         holder.lldetailsMenu.setVisibility(View.VISIBLE);
                         holder.img_pause.setVisibility(View.VISIBLE);
-                        holder.img_pause.setVisibility(View.VISIBLE);
-                        holder.videodata.setVisibility(View.VISIBLE);
+                        //holder.videodata.setVisibility(View.VISIBLE);
                     }
 
-                } else if (videoType.equals("ads_video")) {
+                } else if (videoType.equals("ads_video"))
+                {
 
-                    holder.skip_button.setVisibility(View.VISIBLE);
-                    holder.videodata.setVisibility(View.VISIBLE);
-                    holder.skip_button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            allvideoList.remove(position);
-                            notifyItemRemoved(position);
-                        }
-                    });
-
-                    String url1=allvideoList.get(position).getLinks();
-                    System.out.println("URL LINK==>"+url1);
-                    String url = "https://www.google.com";
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    if (activity != null) {
-                        activity.startActivity(intent);
-                    }
                 }else {
                     Log.e("Video", "activity is null");
                 }
             }
-
-
 
             @Override
             public void onDoubleClick(View view) {
@@ -277,7 +248,102 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             }
         }));
 
+        if (videoType.equals("normal_videos")) {
+            holder.skip_button.setVisibility(View.GONE);
+            holder.request_Button.setVisibility(View.GONE);
+            holder.learnMore_button.setVisibility(View.GONE);
+            holder.Enquire_Button.setVisibility(View.GONE);
+        }else
+        {
+            //holder.videodata.setVisibility(View.VISIBLE);
+            holder.skip_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    allvideoList.remove(position);
+//                    notifyItemRemoved(position);
+                    notifyDataSetChanged();
+                    // Calculate the position of the next video
+                    int nextPosition = position + 1;
 
+                    // Scroll to the next position if it's valid
+//                    if (nextPosition < getItemCount()) {
+//                        holder.scrollToPosition(nextPosition);
+//                    }
+                }
+            });
+
+//            if (activity != null) {
+//                activity.startActivity(intent);
+//            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    holder.skip_button.setVisibility(View.VISIBLE);
+                }
+            }, 10000);
+
+            if(allvideoList.get(position).getType_of_campaign().equals("lead"))
+            {
+                holder.request_Button.setVisibility(View.GONE);
+                holder.learnMore_button.setVisibility(View.GONE);
+                holder.Enquire_Button.setVisibility(View.VISIBLE);
+                click_video_interface.Click_video(position,"","","1");
+            }else if(allvideoList.get(position).getType_of_campaign().equals("sales")){
+                holder.request_Button.setVisibility(View.VISIBLE);
+                holder.learnMore_button.setVisibility(View.GONE);
+                holder.Enquire_Button.setVisibility(View.GONE);
+                click_video_interface.Click_video(position,"","","1");
+
+            }else if(allvideoList.get(position).getType_of_campaign().equals("product_consider"))
+            {
+                holder.request_Button.setVisibility(View.GONE);
+                holder.learnMore_button.setVisibility(View.VISIBLE);
+                holder.Enquire_Button.setVisibility(View.GONE);
+                click_video_interface.Click_video(position,"","","1");
+            }else {
+                click_video_interface.Click_video(position,"","","1");
+                holder.request_Button.setVisibility(View.GONE);
+                holder.learnMore_button.setVisibility(View.GONE);
+                holder.Enquire_Button.setVisibility(View.GONE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        click_video_interface.Click_video(position,"","1","0");
+                    }
+                }, 10000);
+            }
+        }
+        holder.learnMore_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                click_video_interface.Click_video(position,"1","","");
+                //redirect to provided link
+                //String url=allvideoList.get(position).getLinks();
+                String url="https://www.pepperfry.com/";
+                System.out.println("URL LINK==>"+url);
+                // Create an intent with the ACTION_VIEW action and the URL
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                // Launch the intent
+                view.getContext().startActivity(intent);
+            }
+        });
+
+        holder.request_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               //apicall
+                requestcallbackInterface.Callback_request_video(position);
+            }
+        });
+
+        holder.Enquire_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.startActivity(new Intent(activity, LeadForm.class)
+                        .putExtra("campaign_user_auto_id", allvideoList.get(position).getCampaign_user_auto_id()));
+            }
+        });
 //            holder.videoView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
@@ -514,7 +580,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         ToggleButton btn_Wishlist;
         TextView tv_username, tv_video_caption;
         ImageView heart_gif;
-        Button skip_button;
+        Button skip_button,Enquire_Button,request_Button,learnMore_button;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -549,12 +615,12 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             heart_gif = itemView.findViewById(R.id.img_heart);
             img_notification = itemView.findViewById(R.id.imgNotification);
             skip_button = itemView.findViewById(R.id.skipButton);
+            Enquire_Button = itemView.findViewById(R.id.EnquireButton);
+            learnMore_button = itemView.findViewById(R.id.LearnmoreButton);
+            request_Button = itemView.findViewById(R.id.RequestCallbackButton);
             videodata = itemView.findViewById(R.id.videodata);
 
-
-
         }
-
 
     }
 

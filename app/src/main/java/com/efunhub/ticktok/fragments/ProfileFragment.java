@@ -83,8 +83,8 @@ import com.efunhub.ticktok.services.UpdatePofileWithoutPicSP;
 import com.efunhub.ticktok.services.UpdateProfileSP;
 import com.efunhub.ticktok.utility.VolleyService;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.github.drjacky.imagepicker.ImagePicker;
-import com.github.drjacky.imagepicker.constant.ImageProvider;
+//import com.github.drjacky.imagepicker.ImagePicker;
+//import com.github.drjacky.imagepicker.constant.ImageProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
@@ -254,6 +254,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                                 GsonBuilder gsonBuilder = new GsonBuilder();
                                 Gson gson = gsonBuilder.create();
                                 UserProfile userProfiles = gson.fromJson(current_order, UserProfile.class);
+//                                List<UserProfile> userProfileList = Arrays.asList(userProfiles);
+//
+//                                List<UserProfile> userProfiles = gson.fromJson(current_order, UserProfile[].class);
                                 userProfileModel_List = new ArrayList<>(Arrays.asList(userProfiles));
                                 if (!userProfileModel_List.isEmpty()) {
                                     allvideos=(ArrayList<AllPost>) userProfileModel_List.get(0).getAllPosts();
@@ -524,22 +527,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 //                else {
 //                   requestpermission();
 //                }
-                ImagePicker.Companion.with(getActivity())
-                        .crop()
-                        .cropOval()
-                        .maxResultSize(512, 512, true)
-                        .provider(ImageProvider.BOTH) //Or bothCameraGallery()
-                        .createIntentFromDialog((Function1) (new Function1() {
-                            public Object invoke(Object var1) {
-                                this.invoke((Intent) var1);
-                                return Unit.INSTANCE;
-                            }
-
-                            public final void invoke(@NotNull Intent it) {
-                                Intrinsics.checkNotNullParameter(it, "it");
-                                launcher.launch(it);
-                            }
-                        }));
+//                ImagePicker.Companion.with(getActivity())
+//                        .crop()
+//                        .cropOval()
+//                        .maxResultSize(512, 512, true)
+//                        .provider(ImageProvider.BOTH) //Or bothCameraGallery()
+//                        .createIntentFromDialog((Function1) (new Function1() {
+//                            public Object invoke(Object var1) {
+//                                this.invoke((Intent) var1);
+//                                return Unit.INSTANCE;
+//                            }
+//
+//                            public final void invoke(@NotNull Intent it) {
+//                                Intrinsics.checkNotNullParameter(it, "it");
+//                                launcher.launch(it);
+//                            }
+//                        }));
             }
         });
 
@@ -626,9 +629,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     mImageCaptureUri= Uri.parse(uri.toString());
                     mflagVariableImageEmpty=mImageCaptureUri.getPath();
                     // Use the uri to load the image
-                }else if(result.getResultCode()==ImagePicker.RESULT_ERROR){
-                    // Use ImagePicker.Companion.getError(result.getData()) to show an error
                 }
+//                else if(result.getResultCode()==ImagePicker.RESULT_ERROR){
+//                    // Use ImagePicker.Companion.getError(result.getData()) to show an error
+//                }
             });
 
 

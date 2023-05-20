@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Registration extends AppCompatActivity {
-    Spinner spi_Country;
-    EditText et_username, et_usermobile, et_user_email;
+    Spinner spi_Country,spi_State;
+    EditText et_username, et_usermobile, et_user_email,et_city;
     ShowHidePasswordEditText et_userPassword;
     Button btnSubmit;
     String token = "";
@@ -58,10 +58,12 @@ public class Registration extends AppCompatActivity {
 
     private void initData() {
         spi_Country = findViewById(R.id.spi_Country);
+        spi_State= findViewById(R.id.spi_state);
         et_username = findViewById(R.id.et_username);
         et_userPassword = findViewById(R.id.et_userPassword);
         et_usermobile = findViewById(R.id.et_usermobile);
         et_user_email = findViewById(R.id.et_user_email);
+        et_city = findViewById(R.id.et_city);
         tv_login_layout = findViewById(R.id.tv_login_layout);
         tv_login_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,15 +95,19 @@ public class Registration extends AppCompatActivity {
             et_user_email.setError("Enter the email");
         } else if (spi_Country.getSelectedItem().toString().equals("Select Country")) {
             Toast.makeText(Registration.this, "Select Country name", Toast.LENGTH_SHORT).show();
-        } else {
-            Register_User(et_username.getText().toString(), et_userPassword.getText().toString(), et_user_email.getText().toString(), et_usermobile.getText().toString(), spi_Country.getSelectedItem().toString());
+        }  else if (spi_State.getSelectedItem().toString().equals("Select State")) {
+            Toast.makeText(Registration.this, "Select State name", Toast.LENGTH_SHORT).show();
+        } else if (et_city.getText().toString().isEmpty()) {
+            et_city.setError("Enter the city");
+        }else {
+            Register_User(et_username.getText().toString(), et_userPassword.getText().toString(), et_user_email.getText().toString(), et_usermobile.getText().toString(), spi_Country.getSelectedItem().toString(),spi_State.getSelectedItem().toString(),et_city.getText().toString());
         }
     }
 
 
-    private void Register_User(String name, String password, String email, String mobile, String country) {
+    private void Register_User(String name, String password, String email, String mobile, String country,String state,String city) {
         //Toast.makeText(Registration.this, "Like_Video_Data=>"+name+" "+password+" "+email+" "+mobile+" "+counntry, Toast.LENGTH_SHORT).show();
-        System.out.println("Data=> params " + name + " " + password + " " + email + " " + mobile + " " + country);
+        System.out.println("Data=> params " + name + " " + password + " " + email + " " + mobile + " " + country +" "+state+" "+city);
         String Urls = SERVER_URL + registration;
         System.out.println(Urls);
         progressDialog = DialogsUtils.showProgressDialog(Registration.this, "Please Wait");
@@ -160,6 +166,8 @@ public class Registration extends AppCompatActivity {
                 params.put("email", email);
                 params.put("mobile", mobile);
                 params.put("country", country);
+                params.put("state", state);
+                params.put("district", city);
                 params.put("token", token);
                 System.out.println("params"+params);
                 return params;

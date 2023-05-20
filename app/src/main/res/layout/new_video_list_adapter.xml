@@ -377,7 +377,6 @@
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 
-
     <Button
         android:id="@+id/skipButton"
         android:layout_width="wrap_content"
@@ -387,11 +386,62 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="319dp"
-        android:layout_marginTop="550dp"
+        android:layout_marginTop="650dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="133dp"
+        android:layout_marginBottom="20dp"
         android:background="@color/black"
         android:text="Skip"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/EnquireButton"
+        android:layout_width="wrap_content"
+        android:layout_height="41dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/gray"
+        android:text="Enquire Now"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/LearnmoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/lightprimary"
+        android:text="Learn More"
+        android:textColor="@android:color/black"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/RequestCallbackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorPrimary"
+        android:text="Request Callback"
         android:textColor="@android:color/white"
         android:visibility="gone" />
 
@@ -429,7 +479,6 @@
             android:text="Connect Us"
             android:textColor="@color/white"
             android:textSize="16dp" />
-
 
     </LinearLayout>
 
