@@ -78,31 +78,27 @@ import com.efunhub.ticktok.retrofit.APICallback;
 import com.efunhub.ticktok.retrofit.AlertDialogs;
 import com.efunhub.ticktok.retrofit.BaseServiceResponseModel;
 import com.efunhub.ticktok.retrofit.PrintUtil;
-import com.efunhub.ticktok.services.GetProfileSP;
 import com.efunhub.ticktok.services.UpdatePofileWithoutPicSP;
 import com.efunhub.ticktok.services.UpdateProfileSP;
 import com.efunhub.ticktok.utility.VolleyService;
 import com.facebook.shimmer.ShimmerFrameLayout;
 //import com.github.drjacky.imagepicker.ImagePicker;
 //import com.github.drjacky.imagepicker.constant.ImageProvider;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -527,6 +523,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 //                else {
 //                   requestpermission();
 //                }
+
 //                ImagePicker.Companion.with(getActivity())
 //                        .crop()
 //                        .cropOval()

@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.efunhub.ticktok.CampaignModel.CampaignModelData;
 import com.efunhub.ticktok.R;
+import com.efunhub.ticktok.activity.CustomRecyclerview;
 import com.efunhub.ticktok.adapter.VideoAdapterNew;
 import com.efunhub.ticktok.application.SessionManager;
 import com.efunhub.ticktok.interfaces.Click_video_interface;
@@ -44,13 +46,14 @@ public class Following_VideoFragment extends Fragment implements ShowCommentList
     View view;
     private AllVideoServiceProvider allVideoServiceProvider;
     private AlertDialogs mAlert;
-    RecyclerView rv_FOllowing_VideoView;
+    CustomRecyclerview rv_FOllowing_VideoView;
     View root;
     String user_id;
     VideoAdapterNew videoAdapter;
     String VIDEO_LIKE = "video-like";
     ArrayList<AllVideoModel.Data> videoArrayList;
     ArrayList<UserProfile> userProfileModel_List = new ArrayList<>();
+    ArrayList<CampaignModelData.Data> imageCampaignList=new ArrayList<>();
     public Following_VideoFragment() {
         // Required empty public constructor
     }
@@ -94,7 +97,7 @@ public class Following_VideoFragment extends Fragment implements ShowCommentList
         SnapHelper snapHelper = new PagerSnapHelper();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         rv_FOllowing_VideoView.setLayoutManager(gridLayoutManager);
-        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this,this, "following",this,this);
+        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList,imageCampaignList, this,this, "following",this,this,videoAdapter, gridLayoutManager,snapHelper,rv_FOllowing_VideoView);
 
         rv_FOllowing_VideoView.setAdapter(videoAdapter);
         snapHelper.attachToRecyclerView(rv_FOllowing_VideoView);
@@ -238,7 +241,17 @@ public class Following_VideoFragment extends Fragment implements ShowCommentList
     }
 
     @Override
+    public void Click_Image(int position, String click, String view, String impression) {
+
+    }
+
+    @Override
     public void Callback_request_video(int position) {
+
+    }
+
+    @Override
+    public void Callback_request_image(int position) {
 
     }
 }

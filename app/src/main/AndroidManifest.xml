@@ -41,9 +41,6 @@
         android:usesCleartextTraffic="true"
         tools:ignore="HardcodedDebugMode">
         <activity
-            android:name=".LeadForm"
-            android:exported="false" />
-        <activity
             android:name=".activity.NotificationDetails"
             android:exported="false">
             <meta-data

@@ -34,9 +34,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.efunhub.ticktok.CampaignModel.CampaignModelData;
 import com.efunhub.ticktok.R;
 import com.efunhub.ticktok.activity.CommentActivity;
-import com.efunhub.ticktok.activity.LeadForm;
-import com.efunhub.ticktok.activity.MainActivity;
-import com.efunhub.ticktok.activity.UserDetailsRegistration;
+import com.efunhub.ticktok.activity.CustomRecyclerview;
+import com.efunhub.ticktok.activity.CustomSnapHelper;
 import com.efunhub.ticktok.adapter.VideoAdapterNew;
 import com.efunhub.ticktok.application.SessionManager;
 
@@ -88,6 +87,7 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
 
     String request_callback = "request_callback";
     String Profile_User = "get_myprofile";
+
     String CampaignImg ="",CampName="", CampLink ="";
     String get_campaign_list="get_image_campaign_list";
     private VolleyService mVolleyService;
@@ -99,7 +99,7 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
     ImageView CampImg,crossImg;
     Button Connectus;
     ArrayList<AllVideoModel.Data> videoArrayList=new ArrayList<>();
-    ArrayList<CampaignModelData.Data> allCampaignList=new ArrayList<>();
+    ArrayList<CampaignModelData.Data> imageCampaignList=new ArrayList<>();
     ArrayList<AllVideoModel.Data> PaginationArrayList;
     static int limit=10;
     int index=0;
@@ -118,12 +118,6 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
 
         init();
 
-    /*    View decorView = getActivity().getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        decorView.setSystemUiVisibility(uiOptions);*/
-
         return root;
     }
 
@@ -131,53 +125,51 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         mAlert = AlertDialogs.getInstance();
 //        campName=root.findViewById(R.id.camName);
 //        camplink=root.findViewById(R.id.link);
-        CampImg=root.findViewById(R.id.campainImg);
-        crossImg=root.findViewById(R.id.imgCross);
-        Connectus=root.findViewById(R.id.connect);
-        Connectus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        CampImg=root.findViewById(R.id.campainImg);
+//        crossImg=root.findViewById(R.id.imgCross);
+//        Connectus=root.findViewById(R.id.connect);
+//        Connectus.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
-            }
-        });
-
-        relativeLayout = root.findViewById(R.id.linearLayoutCamp);
+        //relativeLayout = root.findViewById(R.id.linearLayoutCamp);
         allVideoServiceProvider = new AllVideoServiceProvider(getActivity());
         video_lIke_service_provider = new Video_LIke_Service_Provider(getActivity());
         rvVideoView = root.findViewById(R.id.rvVideoView);
         user_id = SessionManager.onGetAutoCustomerId();
-//        camp_user_id = SessionManager.onGetCampaignData();
-//        System.out.println("CAMPAIGNUSERID"+camp_user_id);
-        getUser_Profile();
-        setGet_campaign_list();
-        setAdapter();
-        callGetAllVideoApi(SessionManager.onGetAutoCustomerId(),limit,index);
-        flag = true;
 
-//        Connectus.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(getActivity(), LeadForm.class));
-//            }
-//        });
-        crossImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                relativeLayout.setVisibility(View.GONE);
-            }
-        });
+        getUser_Profile();
+        Get_campaign_list();
+        Log.v("Image list size",String.valueOf(imageCampaignList.size()));
+        callGetAllVideoApi(SessionManager.onGetAutoCustomerId(),limit,index);
+        Log.v("Video list size",String.valueOf(videoArrayList.size()));
+        setAdapter();
+        flag = true;
 
     }
 
     private void setAdapter() {
 
-        SnapHelper snapHelper = new PagerSnapHelper();
+//        SnapHelper snapHelper = new PagerSnapHelper();
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
+//        rvVideoView.setLayoutManager(gridLayoutManager);
+//        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList,imageCampaignList, this, this,"for_you",this,this);
+//        rvVideoView.setAdapter(videoAdapter);
+//        // Set up the pagination logic
+//        snapHelper.attachToRecyclerView(rvVideoView);
+        // Create the CustomSnapHelper instance
+        CustomSnapHelper snapHelper = new CustomSnapHelper();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         rvVideoView.setLayoutManager(gridLayoutManager);
-        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList, this, this,"for_you",this,this);
+        videoAdapter = new VideoAdapterNew(getActivity(), videoArrayList,imageCampaignList, this, this,"for_you",this,this,videoAdapter,gridLayoutManager,snapHelper,rvVideoView);
         rvVideoView.setAdapter(videoAdapter);
-        // Set up the pagination logic
+        ///Attach the CustomSnapHelper to the RecyclerView
         snapHelper.attachToRecyclerView(rvVideoView);
+
+
         rvVideoView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -224,11 +216,10 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                         //  mAlert.onShowToastNotification(getActivity(),"Success") ;
                         if (!PaginationArrayList.isEmpty()) {
                             videoArrayList.addAll(PaginationArrayList);
-                            //setAdapter();
                             videoAdapter.notifyItemRangeInserted(videoArrayList.size() - PaginationArrayList.size(), PaginationArrayList.size());
                             System.out.println("Video list"+String.valueOf(videoArrayList.size()));
+                            //Get_campaign_list();
                         }
-
                     } else {
                         isLoading = false;
                         mAlert.onShowToastNotification(getActivity(), "Please Wait");
@@ -269,20 +260,15 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
         params.put("user_id", user_id);
         System.out.println("params=>" + params.toString());
         mVolleyService.postDataVolleyParameters(USER_PROFILE, SERVER_URL + Profile_User, params);
-
     }
-    private void setGet_campaign_list() {
-        allCampaignList.clear();
+    private void Get_campaign_list() {
+        imageCampaignList.clear();
         initVolleyCallback();
         mVolleyService = new VolleyService(mResultCallBack, getActivity());
-
-//        Map<String, String> params = new HashMap<>();
-//        params.put("user_auto_id", camp_user_id);
-//        params.put("status", camp_status);
-//        System.out.println("params=>" + params.toString());
-        mVolleyService.getDataVolley(CAMPAIGN_LIST, SERVER_URL + get_campaign_list);
-
+        String url = SERVER_URL + get_campaign_list;
+        mVolleyService.getDataVolley(CAMPAIGN_LIST, url);
     }
+
 
     private void initVolleyCallback() {
         mResultCallBack = new IResult() {
@@ -335,69 +321,25 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                                 if (data.startsWith("[")) {
                                     // Handle JSON array
                                     CampaignModelData.Data[] dataList = gson.fromJson(data, CampaignModelData.Data[].class);
-                                    allCampaignList = new ArrayList<>(Arrays.asList(dataList));
+                                    imageCampaignList = new ArrayList<>(Arrays.asList(dataList));
                                 } else {
                                     // Handle JSON object
                                     CampaignModelData campaignModelData = gson.fromJson(data, CampaignModelData.class);
-                                    allCampaignList = new ArrayList<>(Arrays.asList(campaignModelData.getDataList().toArray(new CampaignModelData.Data[0])));
+                                    imageCampaignList = new ArrayList<>(Arrays.asList(campaignModelData.getDataList().toArray(new CampaignModelData.Data[0])));
                                 }
+                                // Update the adapter with the retrieved data
+                                videoAdapter.setImageCampaignList(imageCampaignList);
+
+                                // Notify the adapter that the data has changed
+                                videoAdapter.notifyDataSetChanged();
 
                                 System.out.println("Campaign Data");
-                                for (CampaignModelData.Data campaign : allCampaignList) {
+                                for (CampaignModelData.Data campaign : imageCampaignList) {
                                     System.out.println("cam Type"+ campaign.getIsVideo());
                                     camType=campaign.getImages();
-//                                    if(camType=="Image"){
-//
-//                                    }
-
                                 }
 
-                                System.out.println("Campaign image info: " + allCampaignList.get(0).getImages());
-
-                                for (CampaignModelData.Data campaignData : allCampaignList) {
-                                    System.out.println("Campaign Link: " + campaignData.getLinks());
-                                    System.out.println("Campaign name: " + campaignData.getCampaignName());
-                                    System.out.println("Campaign img: " + campaignData.getImages());
-                                    System.out.println("Campaign User_auo_id: " + campaignData.getUserAutoId());
-                                    SessionManager.onSaveCampaignData(campaignData.getUserAutoId());
-
-//                                   camplink.setText(campaignData.getLinks());
-//                                    campName.setText(campaignData.getCampaignName());
-                                    camImg=campaignData.getImages();
-                                    if (!(camImg.isEmpty()) && !(camImg.equals(img_url)) && !camImg.equals("null"))
-                                    {
-                                        Picasso.with(getContext())
-                                                .load(img_url1+camImg)
-                                                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                                                .networkPolicy(NetworkPolicy.NO_CACHE)
-                                                //.transform(new CircleTransform())
-                                                .into(CampImg);
-                                    }
-                                    CampImg.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            String googleUrl = "https://www.google.com";
-                                            String googleUrl2 =  campaignData.getLinks();
-                                            System.out.println("Campaign URl: " +googleUrl2);
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleUrl));
-                                            startActivity(intent);
-                                        }
-                                    });
-
-                                    long duration = 20000; // 5 seconds
-
-                                    Runnable hideImageViewRunnable = new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            CampImg.setVisibility(View.GONE);
-                                            // Load new image here
-
-                                        }
-                                    };
-
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(hideImageViewRunnable, duration);
-                                }
+                                System.out.println("Campaign image info: " + imageCampaignList.get(0).getImages());
 
                             } else {
                                 // Handle other statuses
@@ -631,6 +573,114 @@ public class AllVideoFragment extends Fragment implements ShowCommentListener, L
                 params.put("user_auto_id", user_id);
                 params.put("campaign_user_auto_id", videoArrayList.get(position).getCampaign_user_auto_id());
                 params.put("campaign_auto_id", videoArrayList.get(position).getCampaign_auto_id());
+                params.put("name", userProfileModel_List.get(0).getName());
+                params.put("contact", userProfileModel_List.get(0).getMobile());
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(postRequest);
+    }
+
+    public void Click_Image(int position,String click,String view,String impression) {
+
+        String Urls = SERVER_URL + add_counts;
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Urls,
+                response -> {
+                    // response
+                    Log.d("Response", response);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("msg");
+                        int status = jsonObject.getInt("status");
+
+                        System.out.println("Click_Video_Data=> status " + status);
+
+                        if (status == 1) {
+
+                            Toast.makeText(getActivity(), "Impression", Toast.LENGTH_SHORT).show();
+
+                        } else if (status == 2) {
+                            Toast.makeText(getActivity(), "not impression", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
+                    }
+
+                },
+                error -> {
+                    // error
+                    Log.d("Error.Response", String.valueOf(error));
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("id", "");
+                params.put("user_auto_id", user_id);
+                params.put("campaign_user_auto_id", imageCampaignList.get(position).getUserAutoId());
+                params.put("campaign_auto_id", imageCampaignList.get(position).getId());
+                params.put("click", click);
+                params.put("view", view);
+                params.put("impresson", impression);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(postRequest);
+    }
+
+    public void Callback_request_image(int position) {
+
+        String Urls = SERVER_URL + request_callback;
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Urls,
+                response -> {
+                    // response
+                    Log.d("Response", response);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("msg");
+                        int status = jsonObject.getInt("status");
+
+                        System.out.println("Click_Image_Data=> status " + status);
+
+                        if (status == 1) {
+
+                            Toast.makeText(getActivity(), "We have got your interest,we will call you back", Toast.LENGTH_SHORT).show();
+
+                        } else if (status == 2) {
+                            Toast.makeText(getActivity(), "not interested", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
+                    }
+
+                },
+                error -> {
+                    // error
+                    Log.d("Error.Response", String.valueOf(error));
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("user_auto_id", user_id);
+                params.put("campaign_user_auto_id", imageCampaignList.get(position).getUserAutoId());
+                params.put("campaign_auto_id", imageCampaignList.get(position).getId());
                 params.put("name", userProfileModel_List.get(0).getName());
                 params.put("contact", userProfileModel_List.get(0).getMobile());
                 return params;

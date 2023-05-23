@@ -160,7 +160,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.1.1'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.github.pedromassango:doubleClick:3.0'
-    //implementation 'com.github.Drjacky:ImagePicker:2.3.22'
+//    implementation 'com.github.Drjacky:ImagePicker:2.3.22'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.google.firebase:firebase-dynamic-links'
 

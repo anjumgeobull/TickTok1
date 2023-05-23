@@ -1,230 +1,193 @@
-
-
 package com.efunhub.ticktok.CampaignModel;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class CampaignModelData {
+    @SerializedName("status")
     private int status;
-    private String message;
+
+    @SerializedName("msg")
+    private String msg;
+
+    @SerializedName("data")
     private List<Data> dataList;
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public String getMsg() {
+        return msg;
     }
 
     public List<Data> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<Data> dataList) {
-        this.dataList = dataList;
-    }
-
     public static class Data {
+        @SerializedName("_id")
         private String id;
+
+        @SerializedName("user_auto_id")
         private String userAutoId;
+
+        @SerializedName("isVideo")
         private String isVideo;
+
+        @SerializedName("frequency")
         private String frequency;
-        private String campaign_name;
+
+        @SerializedName("campaign_name")
+        private String campaignName;
+
+        @SerializedName("campaign_type")
         private String campaignType;
+
+        @SerializedName("campaign_limit")
         private String campaignLimit;
+
+        @SerializedName("start_date")
         private String startDate;
+
+        @SerializedName("end_date")
         private String endDate;
+
+        @SerializedName("contry")
         private String country;
+
+        @SerializedName("state")
         private String state;
+
+        @SerializedName("area")
         private String area;
+
+        @SerializedName("gender")
         private String gender;
+
+        @SerializedName("age")
         private String age;
+
+        @SerializedName("links")
         private String links;
+
+        @SerializedName("status")
         private String status;
+
+        @SerializedName("isImage")
         private String isImage;
+
+        @SerializedName("type_of_campaign")
+        private String typeOfCampaign;
+
+        @SerializedName("images")
         private String images;
+
+        @SerializedName("videos")
         private String videos;
+
+        @SerializedName("updated_at")
         private String updatedAt;
+
+        @SerializedName("created_at")
         private String createdAt;
+
+        @SerializedName("Sikipable")
+        private String sikipable;
+
+        // Generate getters for all the fields
 
         public String getId() {
             return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
         }
 
         public String getUserAutoId() {
             return userAutoId;
         }
 
-        public void setUserAutoId(String userAutoId) {
-            this.userAutoId = userAutoId;
-        }
-
         public String getIsVideo() {
             return isVideo;
-        }
-
-        public void setIsVideo(String isVideo) {
-            this.isVideo = isVideo;
         }
 
         public String getFrequency() {
             return frequency;
         }
 
-        public void setFrequency(String frequency) {
-            this.frequency = frequency;
-        }
-
         public String getCampaignName() {
-            return campaign_name;
-        }
-
-        public void setCampaignName(String campaign_name) {
-            this.campaign_name = campaign_name;
+            return campaignName;
         }
 
         public String getCampaignType() {
             return campaignType;
         }
 
-        public void setCampaignType(String campaignType) {
-            this.campaignType = campaignType;
-        }
-
         public String getCampaignLimit() {
             return campaignLimit;
-        }
-
-        public void setCampaignLimit(String campaignLimit) {
-            this.campaignLimit = campaignLimit;
         }
 
         public String getStartDate() {
             return startDate;
         }
 
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
-        }
-
         public String getEndDate() {
             return endDate;
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = endDate ;
         }
 
         public String getCountry() {
             return country;
         }
 
-        public void setCountry(String country) {
-            this.country = country ;
-        }
-
         public String getState() {
             return state;
-        }
-
-        public void setState(String state) {
-            this.state = state ;
         }
 
         public String getArea() {
             return area;
         }
 
-        public void setArea(String area) {
-            this.area = area ;
-        }
-
         public String getGender() {
             return gender;
-        }
-
-        public void setGender(String gender) {
-            this.gender = gender ;
         }
 
         public String getAge() {
             return age;
         }
 
-        public void setAge(String age) {
-            this.age = age ;
-        }
-
         public String getLinks() {
             return links;
-        }
-
-        public void setLinks(String links) {
-            this.links = links ;
         }
 
         public String getStatus() {
             return status;
         }
 
-        public void setStatus(String status) {
-            this.status = status ;
-        }
-
-
-        public String getIsImagege() {
+        public String getIsImage() {
             return isImage;
         }
 
-        public void setIsImage(String isImage) {
-            this.isImage = isImage ;
+        public String getTypeOfCampaign() {
+            return typeOfCampaign;
         }
 
         public String getImages() {
             return images;
         }
 
-        public void setImages(String images) {
-            this.images = images ;
-        }
-
-
         public String getVideos() {
             return videos;
-        }
-
-        public void setVideos(String videos) {
-            this.videos = videos ;
         }
 
         public String getUpdatedAt() {
             return updatedAt;
         }
 
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt ;
-        }
-
         public String getCreatedAt() {
             return createdAt;
         }
 
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt ;
+        public String getSikipable() {
+            return sikipable;
         }
-
-
-    }}
+    }
+}

@@ -1,6 +1,7 @@
 package com.efunhub.ticktok.adapter;
 
 import static com.efunhub.ticktok.retrofit.Constant.VIDEO_URL;
+import static com.efunhub.ticktok.retrofit.Constant.img_ad_url;
 
 import static ly.img.android.pesdk.backend.decoder.ImageSource.getResources;
 
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
@@ -34,9 +36,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+
 import com.efunhub.ticktok.CampaignModel.CampaignModelData;
 import com.efunhub.ticktok.R;
+import com.efunhub.ticktok.activity.CustomRecyclerview;
+import com.efunhub.ticktok.activity.CustomSnapHelper;
 import com.efunhub.ticktok.activity.LeadForm;
 import com.efunhub.ticktok.activity.LoginActivity;
 import com.efunhub.ticktok.activity.MainActivity;
@@ -64,12 +71,14 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHolder> {
 
     ArrayList<AllVideoModel.Data> allvideoList;
+    ArrayList<CampaignModelData.Data> imageCampaignList;
 
     Activity activity;
     Fragment fragment;
@@ -77,27 +86,41 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
     ShowCommentListener showCommentListener;
     Like_video_interface like_video_interface;
     Click_video_interface click_video_interface;
-
+    String camImg="";
     requestcallback_interface requestcallbackInterface;
     int point;
     String type;
     String img_url = "https://grobiz.app/tiktokadmin/images/user_profiles/";
+    int randomImageIndex=0;
+    private boolean isScrollEnabled = true;
 
+    private VideoAdapterNew videoAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private SnapHelper snapHelper;
+    private RecyclerView rvVideoView;
+    private int nextPosition = -1;
+    boolean videoCompleted=false;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
-    public VideoAdapterNew(Activity context, ArrayList<AllVideoModel.Data> allvideoList, ShowCommentListener showCommentListener, Like_video_interface like_video_interface,
-                           String type,Click_video_interface click_video_interface,requestcallback_interface requestcallback_interface) {
+    public VideoAdapterNew(Activity context, ArrayList<AllVideoModel.Data> allvideoList, ArrayList<CampaignModelData.Data> image_CampaignList , ShowCommentListener showCommentListener, Like_video_interface like_video_interface,
+                           String type, Click_video_interface click_video_interface, requestcallback_interface requestcallback_interface, VideoAdapterNew videoAdapter, RecyclerView.LayoutManager LAYOUTMANAGER,SnapHelper snapHelper,RecyclerView
+                                   rvVideoView) {
         this.activity = context;
         this.mInflater = LayoutInflater.from(context);
         this.allvideoList = allvideoList;
+        this.imageCampaignList = image_CampaignList;
         this.showCommentListener = showCommentListener;
         this.like_video_interface = like_video_interface;
         this.click_video_interface = click_video_interface;
         this.requestcallbackInterface = requestcallback_interface;
         this.type = type;
-
-        //this.userProfileModel_List = userProfileModel_List;
-
+        this.videoAdapter = videoAdapter;
+        this.layoutManager = LAYOUTMANAGER;
+        this.snapHelper = snapHelper;
+        this.rvVideoView = rvVideoView;
+    }
+    public void setImageCampaignList(ArrayList<CampaignModelData.Data> campaignList) {
+        this.imageCampaignList = campaignList;
     }
 
     @NonNull
@@ -118,6 +141,12 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         super.onViewAttachedToWindow(holder);
         holder.videoView.start();
     }*/
+    public void scrollToNextItem() {
+        if (nextPosition != -1) {
+            rvVideoView.smoothScrollToPosition(nextPosition);
+            nextPosition = +1; // Reset the next position
+        }
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
@@ -125,7 +154,11 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
         System.out.println("VideoType===>"+allvideoList.get(position).getType());
         String videoType=allvideoList.get(position).getType();
         System.out.println(videoType);
-
+// Determine if scrolling should be enabled
+        // Set the scroll behavior of the adapter
+//        CustomSnapHelper snapHelper = new CustomSnapHelper();
+//        snapHelper.setScrollEnabled(allvideoList.get(position).getSikipable().equals("No"));
+        //snapHelper.attachToRecyclerView(rvVideoView);
         ///Get Video List normal and ads video
         holder.videoView.setVideoPath(VIDEO_URL + allvideoList.get(position).getVideo() +
                 allvideoList.get(position).getcVideos());
@@ -144,13 +177,40 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
                     @Override
                     public void onVideoSizeChanged(MediaPlayer mp, int arg1, int arg2) {
-                        holder.progressBar.setVisibility(View.GONE);
-                        mp.start();
-                        mp.setLooping(true);
+
+                            holder.progressBar.setVisibility(View.GONE);
+                            mp.start();
+                            mp.setLooping(true);
                     }
                 });
             }
         });
+
+//        holder.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mediaPlayer) {
+//
+//                // Video playback is complete
+//                // Add your logic here
+//                // Set the videoCompleted flag to true when the video completes playing
+//                if (allvideoList.get(position).getSikipable().equals("No")) {
+//                    mediaPlayer.stop();
+//                    videoCompleted = true;
+//                    // Scroll to the next position
+//                    scrollToNextItem();
+//                }else {
+//                    mediaPlayer.setLooping(true);
+//                }
+//            }
+//        });
+
+
+//        if (videoCompleted) {
+//            // Set the next position to scroll to
+//            if (allvideoList.get(position).getSikipable().equals("No")) {
+//                nextPosition = position + 1;
+//            }
+//        }
 
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
@@ -171,7 +231,12 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 holder.tv_show_points.setText("Points  " + allvideoList.get(position).getPoint());
             }
         }
-
+        holder.crossImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.imageCampaignLayout.setVisibility(View.GONE);
+            }
+        });
         holder.itemView.setOnClickListener(new DoubleClick(new DoubleClickListener()
         {
             @Override
@@ -197,7 +262,10 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
 
                 } else if (videoType.equals("ads_video"))
                 {
-
+                    holder.llTopMenu.setVisibility(View.GONE);
+                    holder.llSideMenu.setVisibility(View.GONE);
+                    holder.lldetailsMenu.setVisibility(View.GONE);
+                    holder.img_pause.setVisibility(View.GONE);
                 }else {
                     Log.e("Video", "activity is null");
                 }
@@ -207,40 +275,43 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             public void onDoubleClick(View view) {
                 new CountDownTimer(3000, 3000) {
                     public void onTick(long millisUntilFinished) {
-                        if (holder.btn_Wishlist.isChecked() == false && allvideoList.get(position).getSelf_like() == 0) {
-                            holder.heart_gif.setVisibility(View.VISIBLE);
+                        if (videoType.equals("normal_videos")) {
+                            if (holder.btn_Wishlist.isChecked() == false && allvideoList.get(position).getSelf_like() == 0) {
+                                holder.heart_gif.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 
                     public void onFinish() {
-                        holder.llTopMenu.setVisibility(View.GONE);
-                        holder.llSideMenu.setVisibility(View.GONE);
-                        holder.lldetailsMenu.setVisibility(View.GONE);
-                        holder.img_pause.setVisibility(View.GONE);
-                        if (SessionManager.onGetAutoCustomerId().isEmpty()) {
-                            activity.startActivity(new Intent(activity, LoginActivity.class));
-                        } else {
-                            if (holder.btn_Wishlist.isChecked() && allvideoList.get(position).getTotal_likes() != 0 && allvideoList.get(position).getSelf_like() == 1) {
-                                allvideoList.get(position).setSelf_like(0);
-                                holder.btn_Wishlist.setChecked(false);
-                                like_video_interface.Like_video(allvideoList.get(position).get_id(), "0", position);
-                                if(!SessionManager.onGetAutoCustomerId().equals(allvideoList.get(position).getUser_id())) {
-                                    updatePoints(-2, holder.tv_show_points,allvideoList.get(position).getPoint(),holder.tvWishlistCount,position,-1);
-                                }
+                        if(videoType.equals("normal_videos")) {
+                            holder.llTopMenu.setVisibility(View.GONE);
+                            holder.llSideMenu.setVisibility(View.GONE);
+                            holder.lldetailsMenu.setVisibility(View.GONE);
+                            holder.img_pause.setVisibility(View.GONE);
+                            if (SessionManager.onGetAutoCustomerId().isEmpty()) {
+                                activity.startActivity(new Intent(activity, LoginActivity.class));
+                            } else {
+                                if (holder.btn_Wishlist.isChecked() && allvideoList.get(position).getTotal_likes() != 0 && allvideoList.get(position).getSelf_like() == 1) {
+                                    allvideoList.get(position).setSelf_like(0);
+                                    holder.btn_Wishlist.setChecked(false);
+                                    like_video_interface.Like_video(allvideoList.get(position).get_id(), "0", position);
+                                    if (!SessionManager.onGetAutoCustomerId().equals(allvideoList.get(position).getUser_id())) {
+                                        updatePoints(-2, holder.tv_show_points, allvideoList.get(position).getPoint(), holder.tvWishlistCount, position, -1);
+                                    }
 
-                            } else if (!holder.btn_Wishlist.isChecked()) {
-                                allvideoList.get(position).setSelf_like(1);
-                                holder.heart_gif.setVisibility(View.VISIBLE);
-                                holder.btn_Wishlist.setChecked(true);
-                                like_video_interface.Like_video(allvideoList.get(position).get_id(), "1", position);
-                                if(!SessionManager.onGetAutoCustomerId().equals(allvideoList.get(position).getUser_id())) {
-                                    updatePoints(2, holder.tv_show_points,allvideoList.get(position).getPoint(),holder.tvWishlistCount,position,1);
+                                } else if (!holder.btn_Wishlist.isChecked()) {
+                                    allvideoList.get(position).setSelf_like(1);
+                                    holder.heart_gif.setVisibility(View.VISIBLE);
+                                    holder.btn_Wishlist.setChecked(true);
+                                    like_video_interface.Like_video(allvideoList.get(position).get_id(), "1", position);
+                                    if (!SessionManager.onGetAutoCustomerId().equals(allvideoList.get(position).getUser_id())) {
+                                        updatePoints(2, holder.tv_show_points, allvideoList.get(position).getPoint(), holder.tvWishlistCount, position, 1);
+                                    }
                                 }
+                                //notifyDataSetChanged();
                             }
-                            //notifyDataSetChanged();
+                            holder.heart_gif.setVisibility(View.GONE);
                         }
-                        holder.heart_gif.setVisibility(View.GONE);
-
                         //onFinish();
                     }
                 }.start();
@@ -253,14 +324,107 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             holder.request_Button.setVisibility(View.GONE);
             holder.learnMore_button.setVisibility(View.GONE);
             holder.Enquire_Button.setVisibility(View.GONE);
-        }else
+
+            // Generate a random number to determine whether to show the imageCampaignLayout or not
+            Random random = new Random();
+            boolean showImageCampaignLayout = random.nextBoolean();
+
+                if (showImageCampaignLayout && !imageCampaignList.isEmpty()) {
+                    // Set visibility of ad-related views to VISIBLE
+                    holder.imageCampaignLayout.setVisibility(View.VISIBLE);
+
+                    // Get a random image from the imageAdList
+                    randomImageIndex = random.nextInt(imageCampaignList.size());
+
+                    if (randomImageIndex >= imageCampaignList.size()) {
+                        randomImageIndex = imageCampaignList.size() - 1;
+                    }
+                    String adImage = String.valueOf(imageCampaignList.get(randomImageIndex).getImages());
+
+                    // Load the ad image into the imageAdView using an image loading library like Picasso or Glide
+                    Picasso.with(activity.getApplicationContext())
+                            .load(img_ad_url+adImage)
+                            .into(holder.CampImg);
+
+                    // Remove the used image from the imageAdList
+                    //imageCampaignList.remove(randomImageIndex);
+                    if(imageCampaignList.get(randomImageIndex).getTypeOfCampaign().equals("lead"))
+                    {
+                        holder.ad_request_callback.setVisibility(View.GONE);
+                        holder.ad_learnMore.setVisibility(View.GONE);
+                        holder.ad_enquireNow.setVisibility(View.VISIBLE);
+                        click_video_interface.Click_Image(randomImageIndex,"","","1");
+                    }
+                    else if(imageCampaignList.get(randomImageIndex).getTypeOfCampaign().equals("Sales")){
+                        holder.ad_request_callback.setVisibility(View.VISIBLE);
+                        holder.ad_learnMore.setVisibility(View.GONE);
+                        holder.ad_enquireNow.setVisibility(View.GONE);
+                        click_video_interface.Click_Image(randomImageIndex,"","","1");
+                    }
+                    else if(imageCampaignList.get(randomImageIndex).getTypeOfCampaign().equals("product_consider"))
+                    {
+                        holder.ad_request_callback.setVisibility(View.GONE);
+                        holder.ad_learnMore.setVisibility(View.VISIBLE);
+                        holder.ad_enquireNow.setVisibility(View.GONE);
+                        click_video_interface.Click_Image(randomImageIndex,"","","1");
+                    }
+                    else {
+                        holder.ad_request_callback.setVisibility(View.GONE);
+                        holder.ad_learnMore.setVisibility(View.GONE);
+                        holder.ad_enquireNow.setVisibility(View.GONE);
+                        click_video_interface.Click_Image(randomImageIndex,"","","1");
+                    }
+                    holder.ad_learnMore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //click_video_interface.Click_video(position,"1","","");
+                            //redirect to provided link
+                            //String url=imageCampaignList.get(randomImageIndex).getLinks();
+                            String url="https://www.pepperfry.com/";
+                            System.out.println("URL LINK==>"+url);
+                            // Create an intent with the ACTION_VIEW action and the URL
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(url));
+                            // Launch the intent
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
+                    holder.ad_request_callback.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //apicall
+                            requestcallbackInterface.Callback_request_image(randomImageIndex);
+                        }
+                    });
+
+                    holder.ad_enquireNow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            activity.startActivity(new Intent(activity, LeadForm.class)
+                                    .putExtra("campaign_user_auto_id", imageCampaignList.get(randomImageIndex).getUserAutoId()));
+                        }
+                    });
+
+                }
+                else {
+                    // Set visibility of ad-related views to GONE
+                    holder.imageCampaignLayout.setVisibility(View.GONE);
+                    holder.CampImg.setImageDrawable(null);
+                }
+        }
+        else
         {
+            holder.llTopMenu.setVisibility(View.GONE);
+            holder.llSideMenu.setVisibility(View.GONE);
+            holder.lldetailsMenu.setVisibility(View.GONE);
+            holder.img_pause.setVisibility(View.GONE);
+            holder.imageCampaignLayout.setVisibility(View.GONE);
             //holder.videodata.setVisibility(View.VISIBLE);
             holder.skip_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     allvideoList.remove(position);
-//                    notifyItemRemoved(position);
                     notifyDataSetChanged();
                     // Calculate the position of the next video
                     int nextPosition = position + 1;
@@ -272,36 +436,35 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 }
             });
 
-//            if (activity != null) {
-//                activity.startActivity(intent);
-//            }
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     holder.skip_button.setVisibility(View.VISIBLE);
                 }
-            }, 10000);
+            }, 8000);
 
             if(allvideoList.get(position).getType_of_campaign().equals("lead"))
             {
                 holder.request_Button.setVisibility(View.GONE);
                 holder.learnMore_button.setVisibility(View.GONE);
                 holder.Enquire_Button.setVisibility(View.VISIBLE);
-                click_video_interface.Click_video(position,"","","1");
-            }else if(allvideoList.get(position).getType_of_campaign().equals("sales")){
+                //click_video_interface.Click_video(position,"","","1");
+            }
+            else if(allvideoList.get(position).getType_of_campaign().equals("Sales")){
                 holder.request_Button.setVisibility(View.VISIBLE);
                 holder.learnMore_button.setVisibility(View.GONE);
                 holder.Enquire_Button.setVisibility(View.GONE);
-                click_video_interface.Click_video(position,"","","1");
+                //click_video_interface.Click_video(position,"","","1");
 
             }else if(allvideoList.get(position).getType_of_campaign().equals("product_consider"))
             {
                 holder.request_Button.setVisibility(View.GONE);
                 holder.learnMore_button.setVisibility(View.VISIBLE);
                 holder.Enquire_Button.setVisibility(View.GONE);
-                click_video_interface.Click_video(position,"","","1");
-            }else {
-                click_video_interface.Click_video(position,"","","1");
+                //click_video_interface.Click_video(position,"","","1");
+            }
+            else {
+                //click_video_interface.Click_video(position,"","","1");
                 holder.request_Button.setVisibility(View.GONE);
                 holder.learnMore_button.setVisibility(View.GONE);
                 holder.Enquire_Button.setVisibility(View.GONE);
@@ -313,6 +476,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 }, 10000);
             }
         }
+
         holder.learnMore_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -344,23 +508,6 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                         .putExtra("campaign_user_auto_id", allvideoList.get(position).getCampaign_user_auto_id()));
             }
         });
-//            holder.videoView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if(videoType.equals("ads_video")) {
-//                        String url = "https://www.google.com"; // Replace with the desired URL
-//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//                        if (activity != null) {
-//                            activity.startActivity(intent);
-//                        }
-//                    }else {
-//                        Log.e("Video", "activity is null");
-//                    }
-//                }
-//            });
-
 
         holder.imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -409,7 +556,6 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                     //.transform(new CircleTransform())
                     .into(holder.imgProfile);
         }
-
 
         holder.img_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -517,9 +663,6 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             }
         });
 
-
-
-
         holder.tv_rgister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -537,6 +680,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
                 }
             }
         });
+
     }
 
     private void updatePoints(int change, TextView pointsView,String points,TextView likeview,int position,int likes) {
@@ -571,17 +715,17 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         VideoView videoView;
         ImageView imgCreateVideo, imgPause, imgShare, imgDownload, imgSearch, imgMusic, imgComment, img_pause, img_Profile, img_notification;
-        //  HorizontalScrollView scroll;
+        ImageView CampImg,crossImg;
         CircleImageView imgProfile;
         TextView tvWishlistCount, tvCommentCount, tv_show_points,tv_rgister;
         EditText et_serarch_view;
         ProgressBar progressBar = null;
         LinearLayout llTopMenu, llSideMenu, lldetailsMenu, Search_layout, img_myHome,videodata;
+        RelativeLayout imageCampaignLayout;
         ToggleButton btn_Wishlist;
         TextView tv_username, tv_video_caption;
         ImageView heart_gif;
-        Button skip_button,Enquire_Button,request_Button,learnMore_button;
-
+        Button skip_button,Enquire_Button,request_Button,learnMore_button,ad_learnMore,ad_enquireNow,ad_request_callback;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             videoView = itemView.findViewById(R.id.videoView);
@@ -612,6 +756,7 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             tv_rgister = itemView.findViewById(R.id.register);
             //   llFirstMenu=itemView.findViewById(R.id.llFirstMenu);
             lldetailsMenu = itemView.findViewById(R.id.llDetailsMenu);
+            imageCampaignLayout = itemView.findViewById(R.id.imageCampaignLayout);
             heart_gif = itemView.findViewById(R.id.img_heart);
             img_notification = itemView.findViewById(R.id.imgNotification);
             skip_button = itemView.findViewById(R.id.skipButton);
@@ -619,10 +764,13 @@ public class VideoAdapterNew extends RecyclerView.Adapter<VideoAdapterNew.ViewHo
             learnMore_button = itemView.findViewById(R.id.LearnmoreButton);
             request_Button = itemView.findViewById(R.id.RequestCallbackButton);
             videodata = itemView.findViewById(R.id.videodata);
+            CampImg=itemView.findViewById(R.id.campainImg);
+            crossImg=itemView.findViewById(R.id.imgCross);
+            ad_learnMore=itemView.findViewById(R.id.ad_learnMore);
+            ad_enquireNow=itemView.findViewById(R.id.ad_enquireNow);
+            ad_request_callback=itemView.findViewById(R.id.ad_request_callback);
 
         }
-
     }
-
 
 }

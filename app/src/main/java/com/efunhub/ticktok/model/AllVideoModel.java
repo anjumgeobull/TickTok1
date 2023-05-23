@@ -53,6 +53,16 @@ public  class AllVideoModel extends BaseServiceResponseModel {
 
         private String links;
 
+        private String Sikipable;
+
+        public String getSikipable() {
+            return Sikipable;
+        }
+
+        public void setSikipable(String sikipable) {
+            Sikipable = sikipable;
+        }
+
         public String getLinks() {
             return links;
         }
